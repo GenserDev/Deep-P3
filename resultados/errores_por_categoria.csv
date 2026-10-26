@@ -1,0 +1,7 @@
+categoria_error,baseline,A_r8,B_r16,mejor_con_ejecutar
+JOIN,2,3,5,5
+agregacion,2,1,2,2
+columna o tabla inexistente,1,4,1,0
+filtro,0,1,0,0
+resultado distinto,7,7,7,8
+sintaxis,1,0,0,0

@@ -1,3 +1,4 @@
+import gc
 import os
 import re
 import json
@@ -19,6 +20,9 @@ modelo = None
 def cargar(usar_adapter=None, adapter=None):
     """Carga el modelo base y si se pide el adapter LoRA."""
     global tokenizer, modelo
+    # Libera el modelo anterior si ya habia uno cargado
+    modelo = None
+    gc.collect()
     if usar_adapter is None:
         usar_adapter = CONFIG["usar_adapter"]
     adapter = adapter or os.path.join(RUTA, CONFIG["adapter"])

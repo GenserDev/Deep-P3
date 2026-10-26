@@ -1,0 +1,5 @@
+corrida,EX,aciertos,facil,media,dificil,segundos_promedio
+baseline,0.62,27,11 de 13,10 de 15,6 de 12,8.5
+A_r8,0.544,24,11 de 13,7 de 15,6 de 12,10.0
+B_r16,0.57,25,11 de 13,8 de 15,6 de 12,10.1
+mejor_con_ejecutar,0.57,25,11 de 13,8 de 15,6 de 12,2.7

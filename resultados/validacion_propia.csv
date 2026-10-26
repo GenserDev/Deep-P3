@@ -1,0 +1,289 @@
+corrida,base,nivel,pregunta,sql_referencia,sql_generado,acierto,categoria_error,error_mysql,segundos,peso
+baseline,veterinaria,facil,¿Cuántas mascotas son gatos? Devuelve una columna total.,SELECT COUNT(*) AS total FROM vet_masc WHERE masc_esp = 'gato';,"SELECT COUNT(*) AS total_gatos
+FROM vet_masc
+WHERE masc_esp = 'gato';",True,,,12.1,1
+baseline,veterinaria,facil,Muestra el nombre y el peso de las mascotas que pesan más de 30 kilos.,"SELECT masc_nom, masc_peso FROM vet_masc WHERE masc_peso > 30;","SELECT masc_nom, masc_peso
+FROM vet_masc
+WHERE masc_peso > 30;",True,,,6.3,1
+baseline,veterinaria,facil,Lista los nombres de los dueños que viven en Antigua.,SELECT due_nom FROM vet_duenos WHERE due_ciu = 'Antigua';,"SELECT due_nom
+FROM vet_duenos
+WHERE due_ciu = 'Antigua';",True,,,5.2,1
+baseline,veterinaria,facil,¿Cuál es el costo promedio de las consultas? Devuelve promedio.,SELECT AVG(cons_costo) AS promedio FROM vet_cons;,"SELECT AVG(cons_costo) AS costo_promedio
+FROM vet_cons;",True,,,4.7,1
+baseline,veterinaria,facil,"Muestra el nombre y precio de los 3 medicamentos más caros, del más caro al más barato.","SELECT med_nom, med_precio FROM vet_med ORDER BY med_precio DESC LIMIT 3;","SELECT med_nom, med_precio
+FROM vet_med
+ORDER BY med_precio DESC
+LIMIT 3;",True,,,6.0,1
+baseline,veterinaria,facil,¿Qué especialidades distintas tienen los veterinarios? Devuelve la especialidad.,SELECT DISTINCT vet_esp FROM vet_vets;,SELECT vet_esp FROM vet_vets;,False,resultado distinto,,3.2,1
+baseline,veterinaria,facil,Lista el identificador y el costo de las consultas por emergencia que costaron menos de 500.,"SELECT cons_id, cons_costo FROM vet_cons WHERE cons_motivo = 'emergencia' AND cons_costo < 500;","SELECT cons_id, cons_costo
+FROM vet_cons
+WHERE cons_motivo = 'emergencia' AND cons_costo < 500;",True,,,7.7,1
+baseline,veterinaria,media,Muestra el nombre de cada mascota junto con el nombre de su dueño.,"SELECT m.masc_nom, d.due_nom FROM vet_masc m JOIN vet_duenos d ON m.due_id = d.due_id;","SELECT vet_masc.masc_nom, vet_duenos.due_nom
+FROM vet_masc
+JOIN vet_duenos ON vet_masc.due_id = vet_duenos.due_id;",True,,,9.5,2
+baseline,veterinaria,media,¿Cuántas mascotas hay de cada especie? Devuelve la especie y la cantidad.,"SELECT masc_esp, COUNT(*) AS cantidad FROM vet_masc GROUP BY masc_esp;","SELECT masc_esp, COUNT(*) AS cantidad
+FROM vet_masc
+GROUP BY masc_esp;",True,,,5.4,2
+baseline,veterinaria,media,"Para cada veterinario, muestra su nombre y cuántas consultas ha atendido.","SELECT v.vet_nom, COUNT(*) AS consultas FROM vet_vets v JOIN vet_cons c ON c.vet_id = v.vet_id GROUP BY v.vet_id, v.vet_nom;","SELECT vet_vets.vet_nom, COUNT(*) AS num_consultas
+FROM vet_cons
+JOIN vet_vets ON vet_cons.vet_id = vet_vets.vet_id
+GROUP BY vet_vets.vet_nom;",True,,,10.5,2
+baseline,veterinaria,media,¿Qué dueños tienen más de 2 mascotas? Devuelve el nombre del dueño y la cantidad de mascotas.,"SELECT d.due_nom, COUNT(*) AS mascotas FROM vet_duenos d JOIN vet_masc m ON m.due_id = d.due_id GROUP BY d.due_id, d.due_nom HAVING COUNT(*) > 2;","SELECT due_nom, COUNT(*) AS cantidad
+FROM vet_duenos
+JOIN vet_masc ON vet_duenos.due_id = vet_masc.due_id
+GROUP BY due_nom
+HAVING COUNT(*) > 2;",False,resultado distinto,,11.0,2
+baseline,veterinaria,media,Calcula el total gastado en consultas por cada especie de mascota. Devuelve especie y total.,"SELECT m.masc_esp, SUM(c.cons_costo) AS total FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.masc_esp;","SELECT vet_masc.masc_esp, SUM(vet_cons.cons_costo) AS total
+FROM vet_cons
+JOIN vet_masc ON vet_cons.masc_id = vet_masc.masc_id
+GROUP BY vet_masc.masc_esp;",True,,,11.4,2
+baseline,veterinaria,media,"Muestra el nombre de las mascotas atendidas por veterinarios de dermatologia, sin repetir.",SELECT DISTINCT m.masc_nom FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id JOIN vet_vets v ON c.vet_id = v.vet_id WHERE v.vet_esp = 'dermatologia';,"SELECT masc_nom
+FROM vet_masc
+WHERE masc_id IN (
+    SELECT masc_id
+    FROM vet_cons
+    WHERE vet_id IN (
+        SELECT vet_id
+        FROM vet_vets
+        WHERE vet_esp = 'dermatologia'
+    )
+) AND masc_id IN (
+    SELECT masc_id
+    FROM vet_cons
+    WHERE masc_id IN (
+        SELECT masc_id
+        FROM vet_masc
+        WHERE due_id IN (
+            SELECT due_id
+            FROM vet_duenos
+        )
+    )
+);",False,JOIN,,23.1,2
+baseline,veterinaria,media,"Para cada nombre de medicamento, cuántas unidades se han recetado en total. Devuelve nombre del medicamento y unidades.","SELECT md.med_nom, SUM(r.rec_cant) AS unidades FROM vet_receta r JOIN vet_med md ON r.med_id = md.med_id GROUP BY md.med_nom;","SELECT med_nom, SUM(rec_cant) AS unidades
+FROM vet_receta
+JOIN vet_med ON vet_receta.med_id = vet_med.med_id
+GROUP BY med_nom;",True,,,8.7,2
+baseline,veterinaria,media,¿Qué motivos de consulta tienen un costo promedio mayor a 1500? Devuelve motivo y costo promedio.,"SELECT cons_motivo, AVG(cons_costo) AS promedio FROM vet_cons GROUP BY cons_motivo HAVING AVG(cons_costo) > 1500;","SELECT cons_motivo, AVG(cons_costo) AS costo_promedio
+FROM vet_cons
+WHERE cons_costo > 1500
+GROUP BY cons_motivo;",False,agregacion,,8.9,2
+baseline,veterinaria,dificil,¿Cuántas consultas se hicieron en 2024? Devuelve total.,SELECT COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2024;,SELECT COUNT(*) FROM vet_cons WHERE cons_fec BETWEEN '2024-01-01' AND '2024-12-31';,True,,,8.5,3
+baseline,veterinaria,dificil,Lista el nombre de los dueños que no tienen ninguna mascota registrada.,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT due_id FROM vet_masc);,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT masc_due_id FROM vet_masc);,False,columna o tabla inexistente,"(1054, ""Unknown column 'masc_due_id' in 'field list'"")",5.7,3
+baseline,veterinaria,dificil,Muestra el nombre y peso de las mascotas que pesan más que el promedio de su misma especie. Devuelve también la especie.,"SELECT m.masc_nom, m.masc_peso, m.masc_esp FROM vet_masc m WHERE m.masc_peso > (SELECT AVG(x.masc_peso) FROM vet_masc x WHERE x.masc_esp = m.masc_esp);","SELECT masc_nom, masc_peso, masc_esp
+FROM vet_masc
+WHERE masc_peso > (
+    SELECT AVG(masc_peso) FROM vet_masc
+    WHERE masc_esp = masc_esp
+);",False,resultado distinto,,11.0,3
+baseline,veterinaria,dificil,"Para cada mes de 2025, muestra el número de consultas, ordenado por mes. Devuelve mes y total.","SELECT MONTH(cons_fec) AS mes, COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2025 GROUP BY MONTH(cons_fec) ORDER BY mes;","SELECT 
+    DATE_FORMAT(cons_fec, '%Y-%m') AS mes,
+    COUNT(*) AS total
+FROM 
+    vet_cons
+WHERE 
+    cons_fec BETWEEN '2025-01-01' AND '2025-12-31'
+GROUP BY 
+    DATE_FORMAT(cons_fec, '%Y-%m')
+ORDER BY 
+    mes;",False,resultado distinto,,19.1,3
+baseline,veterinaria,dificil,"Para cada especie, muestra la mascota de mayor peso. Devuelve especie, nombre y peso.","WITH r AS (SELECT masc_esp, masc_nom, masc_peso, RANK() OVER (PARTITION BY masc_esp ORDER BY masc_peso DESC) AS pos FROM vet_masc) SELECT masc_esp, masc_nom, masc_peso FROM r WHERE pos = 1;","SELECT masc_esp, masc_nom, masc_peso
+FROM vet_masc
+ORDER BY masc_peso DESC
+LIMIT 1;",False,agregacion,,7.1,3
+baseline,veterinaria,dificil,Calcula el gasto total en consultas de cada dueño y muestra solo los dueños cuyo gasto supera el promedio de gasto de todos los dueños. Devuelve nombre del dueño y gasto.,"WITH g AS (SELECT m.due_id, SUM(c.cons_costo) AS gasto FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.due_id) SELECT d.due_nom, g.gasto FROM g JOIN vet_duenos d ON g.due_id = d.due_id WHERE g.gasto > (SELECT AVG(gasto) FROM g);","SELECT 
+    due_nom, 
+    SUM(cons_costo) AS gasto
+FROM 
+    vet_cons
+JOIN 
+    vet_duenos ON vet_cons.masc_id = vet_duenos.due_id
+GROUP BY 
+    due_nom
+HAVING 
+    SUM(cons_costo) > (SELECT AVG(cons_costo) FROM vet_cons);",False,JOIN,,16.5,3
+baseline,airline,facil,¿Cuántos vuelos fueron cancelados? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE status = 'cancelled';,SELECT COUNT(*) FROM flights WHERE status = 'cancelado';,False,resultado distinto,,3.8,1
+baseline,airline,facil,Muestra el modelo y el número de asientos de los aviones con más de 200 asientos.,"SELECT model, seats FROM aircraft WHERE seats > 200;","SELECT model, seats
+FROM aircraft
+WHERE seats > 200;",True,,,4.3,1
+baseline,airline,facil,Lista el nombre de los pasajeros de nacionalidad peruana (Peru).,SELECT pax_name FROM passengers WHERE nationality = 'Peru';,"SELECT pax_name
+FROM passengers
+WHERE nationality = 'Peru';",True,,,4.5,1
+baseline,airline,facil,¿Cuál es la tarifa base más alta de todos los vuelos? Devuelve maximo.,SELECT MAX(base_fare) AS maximo FROM flights;,"SELECT MAX(base_fare) AS max_base_fare
+FROM flights;",True,,,4.5,1
+baseline,airline,facil,"Muestra el identificador y el monto pagado de las 5 reservas más caras, de mayor a menor.","SELECT booking_id, paid FROM bookings ORDER BY paid DESC LIMIT 5;","SELECT booking_id, paid
+FROM bookings
+ORDER BY paid DESC
+LIMIT 5;",True,,,5.1,1
+baseline,airline,facil,Lista el nombre y la ciudad de todos los aeropuertos.,"SELECT airport_name, city FROM airports;","SELECT airport_name, city FROM airports;",True,,,2.7,1
+baseline,airline,media,"Para cada vuelo, muestra su identificador y el nombre del aeropuerto de origen.","SELECT f.flight_id, a.airport_name FROM flights f JOIN airports a ON f.origin = a.airport_code;","SELECT flights.flight_id, airports.airport_name
+FROM flights
+JOIN airports ON flights.origin = airports.airport_code;",True,,,6.0,2
+baseline,airline,media,¿Cuántas reservas hay en cada clase? Devuelve la clase y la cantidad.,"SELECT class, COUNT(*) AS cantidad FROM bookings GROUP BY class;","SELECT class, COUNT(*) AS count
+FROM bookings
+GROUP BY class;",True,,,3.9,2
+baseline,airline,media,Calcula el total pagado por cada pasajero. Devuelve el nombre del pasajero y el total.,"SELECT p.pax_name, SUM(b.paid) AS total FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id GROUP BY p.pax_id, p.pax_name;","SELECT pax_name, SUM(paid) AS total_paid
+FROM bookings
+JOIN passengers ON bookings.pax_id = passengers.pax_id
+GROUP BY pax_name;",False,resultado distinto,,8.1,2
+baseline,airline,media,¿Qué modelos de avión tienen más de 60 vuelos asignados? Devuelve modelo y cantidad de vuelos.,"SELECT a.model, COUNT(*) AS vuelos FROM flights f JOIN aircraft a ON f.aircraft_id = a.aircraft_id GROUP BY a.model HAVING COUNT(*) > 60;","SELECT model, COUNT(*) AS flight_count
+FROM aircraft
+JOIN flights ON aircraft.aircraft_id = flights.aircraft_id
+GROUP BY model
+HAVING COUNT(*) > 60;",True,,,9.0,2
+baseline,airline,media,Muestra el promedio de tarifa base de los vuelos que salen de cada ciudad. Devuelve ciudad y promedio.,"SELECT a.city, AVG(f.base_fare) AS promedio FROM flights f JOIN airports a ON f.origin = a.airport_code GROUP BY a.city;","SELECT airports.city, AVG(flights.base_fare) AS average_base_fare
+FROM flights
+JOIN airports ON flights.origin = airports.airport_code
+GROUP BY airports.city;",True,,,8.1,2
+baseline,airline,media,"Lista el nombre de los pasajeros que tienen alguna reserva en clase first, sin repetir.",SELECT DISTINCT p.pax_name FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id WHERE b.class = 'first';,"SELECT DISTINCT pax_name
+FROM bookings
+JOIN passengers ON bookings.pax_id = passengers.pax_id
+WHERE class = 'first'
+AND bookings.pax_id IN (SELECT pax_id FROM passengers);",True,,,9.5,2
+baseline,airline,media,¿Cuántas reservas tiene cada vuelo retrasado? Devuelve el identificador del vuelo y la cantidad.,"SELECT f.flight_id, COUNT(*) AS reservas FROM flights f JOIN bookings b ON b.flight_id = f.flight_id WHERE f.status = 'delayed' GROUP BY f.flight_id;","SELECT flights.flight_id, COUNT(*) AS count
+FROM flights
+JOIN bookings ON flights.flight_id = bookings.flight_id
+WHERE flights.status = 'retrasado'
+GROUP BY flights.flight_id;",False,resultado distinto,,9.7,2
+baseline,airline,dificil,¿Cuántos vuelos salieron en diciembre de 2024? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE YEAR(dep_date) = 2024 AND MONTH(dep_date) = 12;,SELECT COUNT(*) FROM flights WHERE dep_date BETWEEN '2024-12-01' AND '2024-12-31';,True,,,8.6,3
+baseline,airline,dificil,Lista el nombre de los pasajeros que nunca han hecho una reserva.,SELECT pax_name FROM passengers WHERE pax_id NOT IN (SELECT pax_id FROM bookings);,"SELECT pax_name
+FROM passengers
+WHERE pax_id NOT IN (
+    SELECT pax_id
+    FROM bookings
+);",True,,,7.5,3
+baseline,airline,dificil,Muestra el identificador y el monto de las reservas cuyo pago es mayor que el pago promedio de todas las reservas.,"SELECT booking_id, paid FROM bookings WHERE paid > (SELECT AVG(paid) FROM bookings);","SELECT booking_id, paid
+FROM bookings
+WHERE paid > (SELECT AVG(paid) FROM bookings);",True,,,6.3,3
+baseline,airline,dificil,"Para cada año de compra, muestra el total pagado en reservas, ordenado por año. Devuelve anio y total.","SELECT YEAR(booking_date) AS anio, SUM(paid) AS total FROM bookings GROUP BY YEAR(booking_date) ORDER BY anio;","SELECT booking_date YEAR(booking_date) AS anio, SUM(paid) AS total
+FROM bookings
+GROUP BY anio
+ORDER BY anio;",False,sintaxis,"(1064, ""You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(booking_date) AS anio, SUM(paid) AS total\nFROM bookings\nGROUP BY anio\nORDER BY ' at line 1"")",9.3,3
+baseline,airline,dificil,"Ordena las ciudades de origen según el ingreso total de reservas de sus vuelos y muestra la posición con RANK de mayor a menor. Devuelve ciudad, ingreso y posicion.","WITH t AS (SELECT a.city, SUM(b.paid) AS ingreso FROM bookings b JOIN flights f ON b.flight_id = f.flight_id JOIN airports a ON f.origin = a.airport_code GROUP BY a.city) SELECT city, ingreso, RANK() OVER (ORDER BY ingreso DESC) AS posicion FROM t;","SELECT airports.city, SUM(bookings.paid) AS ingreso, RANK() OVER (ORDER BY SUM(bookings.paid) DESC) AS posicion
+FROM flights
+JOIN bookings ON flights.flight_id = bookings.flight_id
+JOIN airports ON flights.origin = airports.airport_code
+GROUP BY airports.city;",True,,,16.5,3
+baseline,airline,dificil,¿Qué aviones tienen más vuelos que el promedio de vuelos por avión? Devuelve el identificador del avión y la cantidad de vuelos.,"WITH c AS (SELECT aircraft_id, COUNT(*) AS vuelos FROM flights GROUP BY aircraft_id) SELECT aircraft_id, vuelos FROM c WHERE vuelos > (SELECT AVG(vuelos) FROM c);","SELECT aircraft_id, COUNT(*) AS flight_count
+FROM flights
+GROUP BY aircraft_id
+HAVING COUNT(*) > (SELECT AVG(count) FROM (SELECT COUNT(*) AS count FROM flights GROUP BY aircraft_id) AS avg_flights);",True,,,12.6,3
+A_r8,veterinaria,facil,¿Cuántas mascotas son gatos? Devuelve una columna total.,SELECT COUNT(*) AS total FROM vet_masc WHERE masc_esp = 'gato';,SELECT COUNT(*) AS total FROM vet_masc WHERE masc_esp = 'gato';,True,,,7.2,1
+A_r8,veterinaria,facil,Muestra el nombre y el peso de las mascotas que pesan más de 30 kilos.,"SELECT masc_nom, masc_peso FROM vet_masc WHERE masc_peso > 30;","SELECT masc_nom, masc_peso FROM vet_masc WHERE masc_peso > 30;",True,,,7.3,1
+A_r8,veterinaria,facil,Lista los nombres de los dueños que viven en Antigua.,SELECT due_nom FROM vet_duenos WHERE due_ciu = 'Antigua';,SELECT due_nom FROM vet_duenos WHERE due_ciu = 'Antigua';,True,,,6.7,1
+A_r8,veterinaria,facil,¿Cuál es el costo promedio de las consultas? Devuelve promedio.,SELECT AVG(cons_costo) AS promedio FROM vet_cons;,SELECT AVG(cons_costo) AS promedio FROM vet_cons;,True,,,5.9,1
+A_r8,veterinaria,facil,"Muestra el nombre y precio de los 3 medicamentos más caros, del más caro al más barato.","SELECT med_nom, med_precio FROM vet_med ORDER BY med_precio DESC LIMIT 3;","SELECT med_nom, med_precio FROM vet_med ORDER BY med_precio DESC LIMIT 3;",True,,,7.5,1
+A_r8,veterinaria,facil,¿Qué especialidades distintas tienen los veterinarios? Devuelve la especialidad.,SELECT DISTINCT vet_esp FROM vet_vets;,SELECT vet_esp FROM vet_vets;,False,resultado distinto,,4.6,1
+A_r8,veterinaria,facil,Lista el identificador y el costo de las consultas por emergencia que costaron menos de 500.,"SELECT cons_id, cons_costo FROM vet_cons WHERE cons_motivo = 'emergencia' AND cons_costo < 500;","SELECT cons_id, cons_costo FROM vet_cons WHERE cons_motivo = 'emergencia' AND cons_costo < 500;",True,,,9.2,1
+A_r8,veterinaria,media,Muestra el nombre de cada mascota junto con el nombre de su dueño.,"SELECT m.masc_nom, d.due_nom FROM vet_masc m JOIN vet_duenos d ON m.due_id = d.due_id;","SELECT h.masc_nom, p.due_nom FROM vet_masc h JOIN vet_duenos p ON h.due_id = p.due_id;",True,,,10.7,2
+A_r8,veterinaria,media,¿Cuántas mascotas hay de cada especie? Devuelve la especie y la cantidad.,"SELECT masc_esp, COUNT(*) AS cantidad FROM vet_masc GROUP BY masc_esp;","SELECT masc_esp, COUNT(*) AS cantidad FROM vet_masc GROUP BY masc_esp;",True,,,7.3,2
+A_r8,veterinaria,media,"Para cada veterinario, muestra su nombre y cuántas consultas ha atendido.","SELECT v.vet_nom, COUNT(*) AS consultas FROM vet_vets v JOIN vet_cons c ON c.vet_id = v.vet_id GROUP BY v.vet_id, v.vet_nom;","SELECT h.vet_nom, COUNT(*) AS cantidad FROM vet_vets h JOIN vet_cons p ON p.vet_id = h.vet_id GROUP BY h.vet_id, h.vet_nom;",True,,,13.2,2
+A_r8,veterinaria,media,¿Qué dueños tienen más de 2 mascotas? Devuelve el nombre del dueño y la cantidad de mascotas.,"SELECT d.due_nom, COUNT(*) AS mascotas FROM vet_duenos d JOIN vet_masc m ON m.due_id = d.due_id GROUP BY d.due_id, d.due_nom HAVING COUNT(*) > 2;","SELECT h.due_nom, COUNT(*) AS cantidad FROM vet_duenos h JOIN vet_masc p ON h.due_id = p.due_id GROUP BY h.due_id, h.due_nom HAVING COUNT(*) > 2;",True,,,14.9,2
+A_r8,veterinaria,media,Calcula el total gastado en consultas por cada especie de mascota. Devuelve especie y total.,"SELECT m.masc_esp, SUM(c.cons_costo) AS total FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.masc_esp;","SELECT h.masc_esp, SUM(p.cons_costo) AS total FROM vet_cons p JOIN vet_masc h ON h.masc_id = p.masc_id GROUP BY h.masc_id, h.masc_esp;",False,resultado distinto,,14.0,2
+A_r8,veterinaria,media,"Muestra el nombre de las mascotas atendidas por veterinarios de dermatologia, sin repetir.",SELECT DISTINCT m.masc_nom FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id JOIN vet_vets v ON c.vet_id = v.vet_id WHERE v.vet_esp = 'dermatologia';,SELECT h.masc_nom FROM vet_masc h JOIN vet_vets p ON h.due_id = p.due_id WHERE p.vet_esp = 'dermatologia';,False,columna o tabla inexistente,"(1054, ""Unknown column 'p.due_id' in 'on clause'"")",11.6,2
+A_r8,veterinaria,media,"Para cada nombre de medicamento, cuántas unidades se han recetado en total. Devuelve nombre del medicamento y unidades.","SELECT md.med_nom, SUM(r.rec_cant) AS unidades FROM vet_receta r JOIN vet_med md ON r.med_id = md.med_id GROUP BY md.med_nom;","SELECT h.med_nom, SUM(p.rec_cant) AS unidades FROM vet_med h JOIN vet_receta p ON h.med_id = p.med_id GROUP BY h.med_id, h.med_nom;",False,resultado distinto,,11.9,2
+A_r8,veterinaria,media,¿Qué motivos de consulta tienen un costo promedio mayor a 1500? Devuelve motivo y costo promedio.,"SELECT cons_motivo, AVG(cons_costo) AS promedio FROM vet_cons GROUP BY cons_motivo HAVING AVG(cons_costo) > 1500;","SELECT h.cons_motivo, AVG(h.cons_costo) AS costo_promedio FROM vet_cons h GROUP BY h.cons_id, h.cons_motivo HAVING AVG(h.cons_costo) > 1500;",False,resultado distinto,,13.5,2
+A_r8,veterinaria,dificil,¿Cuántas consultas se hicieron en 2024? Devuelve total.,SELECT COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2024;,SELECT COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2024;,True,,,8.0,3
+A_r8,veterinaria,dificil,Lista el nombre de los dueños que no tienen ninguna mascota registrada.,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT due_id FROM vet_masc);,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT due_id FROM vet_masc);,True,,,7.7,3
+A_r8,veterinaria,dificil,Muestra el nombre y peso de las mascotas que pesan más que el promedio de su misma especie. Devuelve también la especie.,"SELECT m.masc_nom, m.masc_peso, m.masc_esp FROM vet_masc m WHERE m.masc_peso > (SELECT AVG(x.masc_peso) FROM vet_masc x WHERE x.masc_esp = m.masc_esp);","SELECT h.masc_esp, p.masc_peso FROM vet_masc h JOIN (SELECT masc_esp, AVG(masc_peso) AS promedio FROM vet_masc GROUP BY masc_esp) p ON h.masc_esp = p.masc_esp AND h.masc_peso > p.promedio;",False,columna o tabla inexistente,"(1054, ""Unknown column 'p.masc_peso' in 'field list'"")",19.0,3
+A_r8,veterinaria,dificil,"Para cada mes de 2025, muestra el número de consultas, ordenado por mes. Devuelve mes y total.","SELECT MONTH(cons_fec) AS mes, COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2025 GROUP BY MONTH(cons_fec) ORDER BY mes;","SELECT MONTH(cons_fec) AS mes, COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2025 GROUP BY MONTH(cons_fec) ORDER BY mes;",True,,,12.4,3
+A_r8,veterinaria,dificil,"Para cada especie, muestra la mascota de mayor peso. Devuelve especie, nombre y peso.","WITH r AS (SELECT masc_esp, masc_nom, masc_peso, RANK() OVER (PARTITION BY masc_esp ORDER BY masc_peso DESC) AS pos FROM vet_masc) SELECT masc_esp, masc_nom, masc_peso FROM r WHERE pos = 1;","SELECT h.masc_esp, p.masc_nom, h.masc_peso FROM vet_masc h JOIN vet_masc p ON h.masc_id = p.masc_id ORDER BY h.masc_esp, p.masc_peso DESC;",False,JOIN,,14.5,3
+A_r8,veterinaria,dificil,Calcula el gasto total en consultas de cada dueño y muestra solo los dueños cuyo gasto supera el promedio de gasto de todos los dueños. Devuelve nombre del dueño y gasto.,"WITH g AS (SELECT m.due_id, SUM(c.cons_costo) AS gasto FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.due_id) SELECT d.due_nom, g.gasto FROM g JOIN vet_duenos d ON g.due_id = d.due_id WHERE g.gasto > (SELECT AVG(gasto) FROM g);","WITH gasto_por_dueño AS (SELECT h.due_nom, SUM(p.cons_costo) AS gasto FROM vet_cons p JOIN vet_duenos h ON h.due_id = p.masc_id GROUP BY h.due_id, h.due_nom) SELECT h.due_nom, gasto FROM gasto_por_dueño h JOIN (SELECT AVG(gasto) AS promedio FROM gasto_por_dueño) p ON h.gasto > p.promedio;",False,filtro,,24.8,3
+A_r8,airline,facil,¿Cuántos vuelos fueron cancelados? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE status = 'cancelled';,SELECT COUNT(*) AS total FROM flights WHERE status = 'Cancelado';,False,resultado distinto,,5.0,1
+A_r8,airline,facil,Muestra el modelo y el número de asientos de los aviones con más de 200 asientos.,"SELECT model, seats FROM aircraft WHERE seats > 200;","SELECT model, seats FROM aircraft WHERE seats > 200;",True,,,5.3,1
+A_r8,airline,facil,Lista el nombre de los pasajeros de nacionalidad peruana (Peru).,SELECT pax_name FROM passengers WHERE nationality = 'Peru';,SELECT pax_name FROM passengers WHERE nationality = 'Peru';,True,,,4.8,1
+A_r8,airline,facil,¿Cuál es la tarifa base más alta de todos los vuelos? Devuelve maximo.,SELECT MAX(base_fare) AS maximo FROM flights;,SELECT MAX(base_fare) AS maximo FROM flights;,True,,,4.8,1
+A_r8,airline,facil,"Muestra el identificador y el monto pagado de las 5 reservas más caras, de mayor a menor.","SELECT booking_id, paid FROM bookings ORDER BY paid DESC LIMIT 5;","SELECT booking_id, paid FROM bookings ORDER BY paid DESC LIMIT 5;",True,,,5.4,1
+A_r8,airline,facil,Lista el nombre y la ciudad de todos los aeropuertos.,"SELECT airport_name, city FROM airports;","SELECT airport_name, city FROM airports;",True,,,3.4,1
+A_r8,airline,media,"Para cada vuelo, muestra su identificador y el nombre del aeropuerto de origen.","SELECT f.flight_id, a.airport_name FROM flights f JOIN airports a ON f.origin = a.airport_code;","SELECT h.flight_id, p.airport_name FROM flights h JOIN airports p ON h.origin = p.airport_code;",True,,,7.9,2
+A_r8,airline,media,¿Cuántas reservas hay en cada clase? Devuelve la clase y la cantidad.,"SELECT class, COUNT(*) AS cantidad FROM bookings GROUP BY class;","SELECT class, COUNT(*) AS cantidad FROM bookings GROUP BY class;",True,,,5.0,2
+A_r8,airline,media,Calcula el total pagado por cada pasajero. Devuelve el nombre del pasajero y el total.,"SELECT p.pax_name, SUM(b.paid) AS total FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id GROUP BY p.pax_id, p.pax_name;","SELECT p.pax_name, SUM(h.paid) AS total FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id GROUP BY p.pax_id, p.pax_name;",True,,,11.8,2
+A_r8,airline,media,¿Qué modelos de avión tienen más de 60 vuelos asignados? Devuelve modelo y cantidad de vuelos.,"SELECT a.model, COUNT(*) AS vuelos FROM flights f JOIN aircraft a ON f.aircraft_id = a.aircraft_id GROUP BY a.model HAVING COUNT(*) > 60;","SELECT model, COUNT(*) AS cantidad FROM aircraft WHERE seats > 60 GROUP BY model, model;",False,JOIN,,6.9,2
+A_r8,airline,media,Muestra el promedio de tarifa base de los vuelos que salen de cada ciudad. Devuelve ciudad y promedio.,"SELECT a.city, AVG(f.base_fare) AS promedio FROM flights f JOIN airports a ON f.origin = a.airport_code GROUP BY a.city;","SELECT h.city, AVG(f.base_fare) AS promedio FROM flights h JOIN airports p ON h.origin = p.airport_code GROUP BY h.origin, p.city;",False,columna o tabla inexistente,"(1054, ""Unknown column 'h.city' in 'field list'"")",10.4,2
+A_r8,airline,media,"Lista el nombre de los pasajeros que tienen alguna reserva en clase first, sin repetir.",SELECT DISTINCT p.pax_name FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id WHERE b.class = 'first';,SELECT p.pax_name FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id WHERE h.class = 'first';,False,resultado distinto,,8.4,2
+A_r8,airline,media,¿Cuántas reservas tiene cada vuelo retrasado? Devuelve el identificador del vuelo y la cantidad.,"SELECT f.flight_id, COUNT(*) AS reservas FROM flights f JOIN bookings b ON b.flight_id = f.flight_id WHERE f.status = 'delayed' GROUP BY f.flight_id;","SELECT h.flight_id, COUNT(*) AS cantidad FROM flights h JOIN bookings p ON h.flight_id = p.flight_id WHERE h.status = 'retrasado' GROUP BY h.flight_id, h.flight_id;",False,resultado distinto,,12.3,2
+A_r8,airline,dificil,¿Cuántos vuelos salieron en diciembre de 2024? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE YEAR(dep_date) = 2024 AND MONTH(dep_date) = 12;,SELECT COUNT(*) AS total FROM flights WHERE MONTH(dep_date) = 12 AND YEAR(dep_date) = 2024;,True,,,8.5,3
+A_r8,airline,dificil,Lista el nombre de los pasajeros que nunca han hecho una reserva.,SELECT pax_name FROM passengers WHERE pax_id NOT IN (SELECT pax_id FROM bookings);,SELECT p.pax_name FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id WHERE h.booking_id IS NULL;,False,JOIN,,8.4,3
+A_r8,airline,dificil,Muestra el identificador y el monto de las reservas cuyo pago es mayor que el pago promedio de todas las reservas.,"SELECT booking_id, paid FROM bookings WHERE paid > (SELECT AVG(paid) FROM bookings);","SELECT booking_id, paid FROM bookings WHERE paid > (SELECT AVG(paid) FROM bookings);",True,,,6.1,3
+A_r8,airline,dificil,"Para cada año de compra, muestra el total pagado en reservas, ordenado por año. Devuelve anio y total.","SELECT YEAR(booking_date) AS anio, SUM(paid) AS total FROM bookings GROUP BY YEAR(booking_date) ORDER BY anio;","SELECT YEAR(booking_date) AS anio, SUM(paid) AS total FROM bookings GROUP BY YEAR(booking_date) ORDER BY anio;",True,,,8.7,3
+A_r8,airline,dificil,"Ordena las ciudades de origen según el ingreso total de reservas de sus vuelos y muestra la posición con RANK de mayor a menor. Devuelve ciudad, ingreso y posicion.","WITH t AS (SELECT a.city, SUM(b.paid) AS ingreso FROM bookings b JOIN flights f ON b.flight_id = f.flight_id JOIN airports a ON f.origin = a.airport_code GROUP BY a.city) SELECT city, ingreso, RANK() OVER (ORDER BY ingreso DESC) AS posicion FROM t;","WITH ingreso_por_ciudad AS (SELECT h.city, SUM(p.paid) AS ingreso FROM flights h JOIN bookings p ON h.flight_id = p.flight_id GROUP BY h.flight_id, h.city) SELECT h.city, ingreso, RANK() OVER (ORDER BY ingreso DESC) AS posicion FROM ingreso_por_ciudad h;",False,columna o tabla inexistente,"(1054, ""Unknown column 'h.city' in 'field list'"")",18.6,3
+A_r8,airline,dificil,¿Qué aviones tienen más vuelos que el promedio de vuelos por avión? Devuelve el identificador del avión y la cantidad de vuelos.,"WITH c AS (SELECT aircraft_id, COUNT(*) AS vuelos FROM flights GROUP BY aircraft_id) SELECT aircraft_id, vuelos FROM c WHERE vuelos > (SELECT AVG(vuelos) FROM c);","SELECT h.aircraft_id, COUNT(*) AS cantidad_de_vuelos FROM aircraft h JOIN flights p ON h.aircraft_id = p.aircraft_id GROUP BY h.aircraft_id, h.aircraft_id HAVING COUNT(*) > (SELECT AVG(COUNT(*)) AS promedio FROM (SELECT h.aircraft_id, COUNT(*) AS cantidad_de_vuelos FROM aircraft h JOIN flights p ON h.aircraft_id = p.aircraft_id GROUP BY h.aircraft_id, h.aircraft_id) AS subconsulta);",False,agregacion,"(1111, 'Invalid use of group function')",25.4,3
+B_r16,veterinaria,facil,¿Cuántas mascotas son gatos? Devuelve una columna total.,SELECT COUNT(*) AS total FROM vet_masc WHERE masc_esp = 'gato';,SELECT COUNT(*) AS total FROM vet_masc WHERE masc_esp = 'gato';,True,,,6.5,1
+B_r16,veterinaria,facil,Muestra el nombre y el peso de las mascotas que pesan más de 30 kilos.,"SELECT masc_nom, masc_peso FROM vet_masc WHERE masc_peso > 30;","SELECT masc_nom, masc_peso FROM vet_masc WHERE masc_peso > 30;",True,,,7.3,1
+B_r16,veterinaria,facil,Lista los nombres de los dueños que viven en Antigua.,SELECT due_nom FROM vet_duenos WHERE due_ciu = 'Antigua';,SELECT due_nom FROM vet_duenos WHERE due_ciu = 'Antigua';,True,,,6.5,1
+B_r16,veterinaria,facil,¿Cuál es el costo promedio de las consultas? Devuelve promedio.,SELECT AVG(cons_costo) AS promedio FROM vet_cons;,SELECT AVG(cons_costo) AS promedio FROM vet_cons;,True,,,5.7,1
+B_r16,veterinaria,facil,"Muestra el nombre y precio de los 3 medicamentos más caros, del más caro al más barato.","SELECT med_nom, med_precio FROM vet_med ORDER BY med_precio DESC LIMIT 3;","SELECT med_nom, med_precio FROM vet_med ORDER BY med_precio DESC LIMIT 3;",True,,,7.1,1
+B_r16,veterinaria,facil,¿Qué especialidades distintas tienen los veterinarios? Devuelve la especialidad.,SELECT DISTINCT vet_esp FROM vet_vets;,SELECT vet_esp FROM vet_vets;,False,resultado distinto,,4.4,1
+B_r16,veterinaria,facil,Lista el identificador y el costo de las consultas por emergencia que costaron menos de 500.,"SELECT cons_id, cons_costo FROM vet_cons WHERE cons_motivo = 'emergencia' AND cons_costo < 500;","SELECT cons_id, cons_costo FROM vet_cons WHERE cons_motivo = 'emergencia' AND cons_costo < 500;",True,,,9.8,1
+B_r16,veterinaria,media,Muestra el nombre de cada mascota junto con el nombre de su dueño.,"SELECT m.masc_nom, d.due_nom FROM vet_masc m JOIN vet_duenos d ON m.due_id = d.due_id;","SELECT h.masc_nom, p.due_nom FROM vet_masc h JOIN vet_duenos p ON h.due_id = p.due_id;",True,,,9.5,2
+B_r16,veterinaria,media,¿Cuántas mascotas hay de cada especie? Devuelve la especie y la cantidad.,"SELECT masc_esp, COUNT(*) AS cantidad FROM vet_masc GROUP BY masc_esp;","SELECT masc_esp, COUNT(*) AS cantidad FROM vet_masc GROUP BY masc_esp;",True,,,6.4,2
+B_r16,veterinaria,media,"Para cada veterinario, muestra su nombre y cuántas consultas ha atendido.","SELECT v.vet_nom, COUNT(*) AS consultas FROM vet_vets v JOIN vet_cons c ON c.vet_id = v.vet_id GROUP BY v.vet_id, v.vet_nom;","SELECT h.vet_nom, COUNT(*) AS cantidad FROM vet_vets h JOIN vet_cons p ON p.vet_id = h.vet_id GROUP BY h.vet_id, h.vet_nom;",True,,,11.9,2
+B_r16,veterinaria,media,¿Qué dueños tienen más de 2 mascotas? Devuelve el nombre del dueño y la cantidad de mascotas.,"SELECT d.due_nom, COUNT(*) AS mascotas FROM vet_duenos d JOIN vet_masc m ON m.due_id = d.due_id GROUP BY d.due_id, d.due_nom HAVING COUNT(*) > 2;","SELECT h.due_nom, COUNT(*) AS cantidad FROM vet_duenos h JOIN vet_masc p ON h.due_id = p.due_id GROUP BY h.due_id, h.due_nom HAVING COUNT(*) > 2;",True,,,13.9,2
+B_r16,veterinaria,media,Calcula el total gastado en consultas por cada especie de mascota. Devuelve especie y total.,"SELECT m.masc_esp, SUM(c.cons_costo) AS total FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.masc_esp;","SELECT h.masc_esp, SUM(p.cons_costo) AS total FROM vet_cons p JOIN vet_masc h ON h.masc_id = p.masc_id GROUP BY h.masc_id, h.masc_esp;",False,resultado distinto,,13.0,2
+B_r16,veterinaria,media,"Muestra el nombre de las mascotas atendidas por veterinarios de dermatologia, sin repetir.",SELECT DISTINCT m.masc_nom FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id JOIN vet_vets v ON c.vet_id = v.vet_id WHERE v.vet_esp = 'dermatologia';,SELECT masc_nom FROM vet_masc WHERE due_id IN (SELECT due_id FROM vet_vets WHERE vet_esp = 'dermatologia');,False,JOIN,,9.0,2
+B_r16,veterinaria,media,"Para cada nombre de medicamento, cuántas unidades se han recetado en total. Devuelve nombre del medicamento y unidades.","SELECT md.med_nom, SUM(r.rec_cant) AS unidades FROM vet_receta r JOIN vet_med md ON r.med_id = md.med_id GROUP BY md.med_nom;","SELECT h.med_nom, SUM(p.rec_cant) AS unidades FROM vet_med h JOIN vet_receta p ON h.med_id = p.med_id GROUP BY h.med_id, h.med_nom;",False,resultado distinto,,12.1,2
+B_r16,veterinaria,media,¿Qué motivos de consulta tienen un costo promedio mayor a 1500? Devuelve motivo y costo promedio.,"SELECT cons_motivo, AVG(cons_costo) AS promedio FROM vet_cons GROUP BY cons_motivo HAVING AVG(cons_costo) > 1500;","SELECT h.cons_motivo, AVG(h.cons_costo) AS costo_promedio FROM vet_cons h GROUP BY h.cons_id, h.cons_motivo HAVING AVG(h.cons_costo) > 1500;",False,resultado distinto,,14.4,2
+B_r16,veterinaria,dificil,¿Cuántas consultas se hicieron en 2024? Devuelve total.,SELECT COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2024;,SELECT COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2024;,True,,,7.3,3
+B_r16,veterinaria,dificil,Lista el nombre de los dueños que no tienen ninguna mascota registrada.,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT due_id FROM vet_masc);,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT due_id FROM vet_masc);,True,,,8.4,3
+B_r16,veterinaria,dificil,Muestra el nombre y peso de las mascotas que pesan más que el promedio de su misma especie. Devuelve también la especie.,"SELECT m.masc_nom, m.masc_peso, m.masc_esp FROM vet_masc m WHERE m.masc_peso > (SELECT AVG(x.masc_peso) FROM vet_masc x WHERE x.masc_esp = m.masc_esp);","SELECT h.masc_esp, p.masc_peso FROM vet_masc h JOIN vet_masc p ON h.masc_esp = p.masc_esp WHERE h.masc_peso > (SELECT AVG(p.masc_peso) FROM vet_masc p WHERE p.masc_esp = h.masc_esp);",False,JOIN,,18.8,3
+B_r16,veterinaria,dificil,"Para cada mes de 2025, muestra el número de consultas, ordenado por mes. Devuelve mes y total.","SELECT MONTH(cons_fec) AS mes, COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2025 GROUP BY MONTH(cons_fec) ORDER BY mes;","SELECT MONTH(cons_fec) AS mes, COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2025 GROUP BY MONTH(cons_fec) ORDER BY mes;",True,,,12.7,3
+B_r16,veterinaria,dificil,"Para cada especie, muestra la mascota de mayor peso. Devuelve especie, nombre y peso.","WITH r AS (SELECT masc_esp, masc_nom, masc_peso, RANK() OVER (PARTITION BY masc_esp ORDER BY masc_peso DESC) AS pos FROM vet_masc) SELECT masc_esp, masc_nom, masc_peso FROM r WHERE pos = 1;","SELECT h.masc_esp, p.masc_nom, h.masc_peso FROM vet_masc h JOIN vet_masc p ON h.masc_id = p.masc_id ORDER BY h.masc_esp, p.masc_peso DESC;",False,JOIN,,15.8,3
+B_r16,veterinaria,dificil,Calcula el gasto total en consultas de cada dueño y muestra solo los dueños cuyo gasto supera el promedio de gasto de todos los dueños. Devuelve nombre del dueño y gasto.,"WITH g AS (SELECT m.due_id, SUM(c.cons_costo) AS gasto FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.due_id) SELECT d.due_nom, g.gasto FROM g JOIN vet_duenos d ON g.due_id = d.due_id WHERE g.gasto > (SELECT AVG(gasto) FROM g);","SELECT h.due_nom, SUM(p.cons_costo) AS gasto FROM vet_duenos h JOIN vet_cons p ON p.masc_id = h.due_id GROUP BY h.due_id, h.due_nom HAVING SUM(p.cons_costo) > (SELECT AVG(gasto) FROM (SELECT SUM(p.cons_costo) AS gasto FROM vet_duenos h JOIN vet_cons p ON p.masc_id = h.due_id GROUP BY h.due_id, h.due_nom) AS gasto);",False,agregacion,,27.9,3
+B_r16,airline,facil,¿Cuántos vuelos fueron cancelados? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE status = 'cancelled';,SELECT COUNT(*) AS total FROM flights WHERE status = 'Cancelado';,False,resultado distinto,,5.3,1
+B_r16,airline,facil,Muestra el modelo y el número de asientos de los aviones con más de 200 asientos.,"SELECT model, seats FROM aircraft WHERE seats > 200;","SELECT model, seats FROM aircraft WHERE seats > 200;",True,,,5.5,1
+B_r16,airline,facil,Lista el nombre de los pasajeros de nacionalidad peruana (Peru).,SELECT pax_name FROM passengers WHERE nationality = 'Peru';,SELECT pax_name FROM passengers WHERE nationality = 'Peru';,True,,,5.1,1
+B_r16,airline,facil,¿Cuál es la tarifa base más alta de todos los vuelos? Devuelve maximo.,SELECT MAX(base_fare) AS maximo FROM flights;,SELECT MAX(base_fare) AS maximo FROM flights;,True,,,5.1,1
+B_r16,airline,facil,"Muestra el identificador y el monto pagado de las 5 reservas más caras, de mayor a menor.","SELECT booking_id, paid FROM bookings ORDER BY paid DESC LIMIT 5;","SELECT booking_id, paid FROM bookings ORDER BY paid DESC LIMIT 5;",True,,,5.9,1
+B_r16,airline,facil,Lista el nombre y la ciudad de todos los aeropuertos.,"SELECT airport_name, city FROM airports;","SELECT airport_name, city FROM airports;",True,,,3.7,1
+B_r16,airline,media,"Para cada vuelo, muestra su identificador y el nombre del aeropuerto de origen.","SELECT f.flight_id, a.airport_name FROM flights f JOIN airports a ON f.origin = a.airport_code;","SELECT h.flight_id, p.airport_name FROM flights h JOIN airports p ON h.origin = p.airport_code;",True,,,8.0,2
+B_r16,airline,media,¿Cuántas reservas hay en cada clase? Devuelve la clase y la cantidad.,"SELECT class, COUNT(*) AS cantidad FROM bookings GROUP BY class;","SELECT class, COUNT(*) AS cantidad FROM bookings GROUP BY class;",True,,,5.1,2
+B_r16,airline,media,Calcula el total pagado por cada pasajero. Devuelve el nombre del pasajero y el total.,"SELECT p.pax_name, SUM(b.paid) AS total FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id GROUP BY p.pax_id, p.pax_name;","SELECT p.pax_name, SUM(h.paid) AS total FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id GROUP BY p.pax_id, p.pax_name;",True,,,11.8,2
+B_r16,airline,media,¿Qué modelos de avión tienen más de 60 vuelos asignados? Devuelve modelo y cantidad de vuelos.,"SELECT a.model, COUNT(*) AS vuelos FROM flights f JOIN aircraft a ON f.aircraft_id = a.aircraft_id GROUP BY a.model HAVING COUNT(*) > 60;","SELECT model, COUNT(*) AS cantidad FROM aircraft WHERE seats > 60 GROUP BY model, seats;",False,JOIN,,7.4,2
+B_r16,airline,media,Muestra el promedio de tarifa base de los vuelos que salen de cada ciudad. Devuelve ciudad y promedio.,"SELECT a.city, AVG(f.base_fare) AS promedio FROM flights f JOIN airports a ON f.origin = a.airport_code GROUP BY a.city;","SELECT h.city, AVG(f.base_fare) AS promedio FROM flights h JOIN airports p ON h.origin = p.airport_code GROUP BY h.origin, p.city;",False,columna o tabla inexistente,"(1054, ""Unknown column 'h.city' in 'field list'"")",11.4,2
+B_r16,airline,media,"Lista el nombre de los pasajeros que tienen alguna reserva en clase first, sin repetir.",SELECT DISTINCT p.pax_name FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id WHERE b.class = 'first';,SELECT DISTINCT p.pax_name FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id WHERE h.class = 'first';,True,,,8.4,2
+B_r16,airline,media,¿Cuántas reservas tiene cada vuelo retrasado? Devuelve el identificador del vuelo y la cantidad.,"SELECT f.flight_id, COUNT(*) AS reservas FROM flights f JOIN bookings b ON b.flight_id = f.flight_id WHERE f.status = 'delayed' GROUP BY f.flight_id;","SELECT h.flight_id, COUNT(*) AS cantidad FROM flights h JOIN bookings p ON h.flight_id = p.flight_id WHERE h.status = 'retrasado' GROUP BY h.flight_id, h.flight_id;",False,resultado distinto,,13.2,2
+B_r16,airline,dificil,¿Cuántos vuelos salieron en diciembre de 2024? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE YEAR(dep_date) = 2024 AND MONTH(dep_date) = 12;,SELECT COUNT(*) AS total FROM flights WHERE MONTH(dep_date) = 12 AND YEAR(dep_date) = 2024;,True,,,9.0,3
+B_r16,airline,dificil,Lista el nombre de los pasajeros que nunca han hecho una reserva.,SELECT pax_name FROM passengers WHERE pax_id NOT IN (SELECT pax_id FROM bookings);,SELECT p.pax_name FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id WHERE h.booking_id IS NULL;,False,JOIN,,8.6,3
+B_r16,airline,dificil,Muestra el identificador y el monto de las reservas cuyo pago es mayor que el pago promedio de todas las reservas.,"SELECT booking_id, paid FROM bookings WHERE paid > (SELECT AVG(paid) FROM bookings);","SELECT booking_id, paid FROM bookings WHERE paid > (SELECT AVG(paid) FROM bookings);",True,,,6.4,3
+B_r16,airline,dificil,"Para cada año de compra, muestra el total pagado en reservas, ordenado por año. Devuelve anio y total.","SELECT YEAR(booking_date) AS anio, SUM(paid) AS total FROM bookings GROUP BY YEAR(booking_date) ORDER BY anio;","SELECT YEAR(booking_date) AS anio, SUM(paid) AS total FROM bookings GROUP BY YEAR(booking_date) ORDER BY anio;",True,,,9.1,3
+B_r16,airline,dificil,"Ordena las ciudades de origen según el ingreso total de reservas de sus vuelos y muestra la posición con RANK de mayor a menor. Devuelve ciudad, ingreso y posicion.","WITH t AS (SELECT a.city, SUM(b.paid) AS ingreso FROM bookings b JOIN flights f ON b.flight_id = f.flight_id JOIN airports a ON f.origin = a.airport_code GROUP BY a.city) SELECT city, ingreso, RANK() OVER (ORDER BY ingreso DESC) AS posicion FROM t;","WITH total_reservations AS (SELECT h.origin, SUM(p.paid) AS ingreso FROM flights h JOIN bookings p ON h.flight_id = p.flight_id GROUP BY h.origin, h.flight_id) SELECT p.city, total_reservations.ingreso, RANK() OVER (ORDER BY total_reservations.ingreso DESC) AS posicion FROM total_reservations JOIN airports p ON total_reservations.origin = p.airport_code;",False,resultado distinto,,22.8,3
+B_r16,airline,dificil,¿Qué aviones tienen más vuelos que el promedio de vuelos por avión? Devuelve el identificador del avión y la cantidad de vuelos.,"WITH c AS (SELECT aircraft_id, COUNT(*) AS vuelos FROM flights GROUP BY aircraft_id) SELECT aircraft_id, vuelos FROM c WHERE vuelos > (SELECT AVG(vuelos) FROM c);","SELECT h.aircraft_id, COUNT(*) AS cantidad_de_vuelos FROM aircraft h JOIN flights p ON h.aircraft_id = p.aircraft_id GROUP BY h.aircraft_id, h.aircraft_id HAVING COUNT(*) > (SELECT AVG(COUNT(*)) AS promedio FROM (SELECT h.aircraft_id, COUNT(*) AS cantidad_de_vuelos FROM aircraft h JOIN flights p ON h.aircraft_id = p.aircraft_id GROUP BY h.aircraft_id, h.aircraft_id) AS promedio);",False,agregacion,"(1111, 'Invalid use of group function')",25.1,3
+mejor_con_ejecutar,veterinaria,facil,¿Cuántas mascotas son gatos? Devuelve una columna total.,SELECT COUNT(*) AS total FROM vet_masc WHERE masc_esp = 'gato';,SELECT COUNT(*) AS total FROM vet_masc WHERE masc_esp = 'gato';,True,,,0.0,1
+mejor_con_ejecutar,veterinaria,facil,Muestra el nombre y el peso de las mascotas que pesan más de 30 kilos.,"SELECT masc_nom, masc_peso FROM vet_masc WHERE masc_peso > 30;","SELECT masc_nom, masc_peso FROM vet_masc WHERE masc_peso > 30;",True,,,0.0,1
+mejor_con_ejecutar,veterinaria,facil,Lista los nombres de los dueños que viven en Antigua.,SELECT due_nom FROM vet_duenos WHERE due_ciu = 'Antigua';,SELECT due_nom FROM vet_duenos WHERE due_ciu = 'Antigua';,True,,,0.0,1
+mejor_con_ejecutar,veterinaria,facil,¿Cuál es el costo promedio de las consultas? Devuelve promedio.,SELECT AVG(cons_costo) AS promedio FROM vet_cons;,SELECT AVG(cons_costo) AS promedio FROM vet_cons;,True,,,0.0,1
+mejor_con_ejecutar,veterinaria,facil,"Muestra el nombre y precio de los 3 medicamentos más caros, del más caro al más barato.","SELECT med_nom, med_precio FROM vet_med ORDER BY med_precio DESC LIMIT 3;","SELECT med_nom, med_precio FROM vet_med ORDER BY med_precio DESC LIMIT 3;",True,,,0.0,1
+mejor_con_ejecutar,veterinaria,facil,¿Qué especialidades distintas tienen los veterinarios? Devuelve la especialidad.,SELECT DISTINCT vet_esp FROM vet_vets;,SELECT vet_esp FROM vet_vets;,False,resultado distinto,,0.0,1
+mejor_con_ejecutar,veterinaria,facil,Lista el identificador y el costo de las consultas por emergencia que costaron menos de 500.,"SELECT cons_id, cons_costo FROM vet_cons WHERE cons_motivo = 'emergencia' AND cons_costo < 500;","SELECT cons_id, cons_costo FROM vet_cons WHERE cons_motivo = 'emergencia' AND cons_costo < 500;",True,,,0.0,1
+mejor_con_ejecutar,veterinaria,media,Muestra el nombre de cada mascota junto con el nombre de su dueño.,"SELECT m.masc_nom, d.due_nom FROM vet_masc m JOIN vet_duenos d ON m.due_id = d.due_id;","SELECT h.masc_nom, p.due_nom FROM vet_masc h JOIN vet_duenos p ON h.due_id = p.due_id;",True,,,0.0,2
+mejor_con_ejecutar,veterinaria,media,¿Cuántas mascotas hay de cada especie? Devuelve la especie y la cantidad.,"SELECT masc_esp, COUNT(*) AS cantidad FROM vet_masc GROUP BY masc_esp;","SELECT masc_esp, COUNT(*) AS cantidad FROM vet_masc GROUP BY masc_esp;",True,,,0.0,2
+mejor_con_ejecutar,veterinaria,media,"Para cada veterinario, muestra su nombre y cuántas consultas ha atendido.","SELECT v.vet_nom, COUNT(*) AS consultas FROM vet_vets v JOIN vet_cons c ON c.vet_id = v.vet_id GROUP BY v.vet_id, v.vet_nom;","SELECT h.vet_nom, COUNT(*) AS cantidad FROM vet_vets h JOIN vet_cons p ON p.vet_id = h.vet_id GROUP BY h.vet_id, h.vet_nom;",True,,,0.0,2
+mejor_con_ejecutar,veterinaria,media,¿Qué dueños tienen más de 2 mascotas? Devuelve el nombre del dueño y la cantidad de mascotas.,"SELECT d.due_nom, COUNT(*) AS mascotas FROM vet_duenos d JOIN vet_masc m ON m.due_id = d.due_id GROUP BY d.due_id, d.due_nom HAVING COUNT(*) > 2;","SELECT h.due_nom, COUNT(*) AS cantidad FROM vet_duenos h JOIN vet_masc p ON h.due_id = p.due_id GROUP BY h.due_id, h.due_nom HAVING COUNT(*) > 2;",True,,,0.0,2
+mejor_con_ejecutar,veterinaria,media,Calcula el total gastado en consultas por cada especie de mascota. Devuelve especie y total.,"SELECT m.masc_esp, SUM(c.cons_costo) AS total FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.masc_esp;","SELECT h.masc_esp, SUM(p.cons_costo) AS total FROM vet_cons p JOIN vet_masc h ON h.masc_id = p.masc_id GROUP BY h.masc_id, h.masc_esp;",False,resultado distinto,,0.0,2
+mejor_con_ejecutar,veterinaria,media,"Muestra el nombre de las mascotas atendidas por veterinarios de dermatologia, sin repetir.",SELECT DISTINCT m.masc_nom FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id JOIN vet_vets v ON c.vet_id = v.vet_id WHERE v.vet_esp = 'dermatologia';,SELECT masc_nom FROM vet_masc WHERE due_id IN (SELECT due_id FROM vet_vets WHERE vet_esp = 'dermatologia');,False,JOIN,,0.0,2
+mejor_con_ejecutar,veterinaria,media,"Para cada nombre de medicamento, cuántas unidades se han recetado en total. Devuelve nombre del medicamento y unidades.","SELECT md.med_nom, SUM(r.rec_cant) AS unidades FROM vet_receta r JOIN vet_med md ON r.med_id = md.med_id GROUP BY md.med_nom;","SELECT h.med_nom, SUM(p.rec_cant) AS unidades FROM vet_med h JOIN vet_receta p ON h.med_id = p.med_id GROUP BY h.med_id, h.med_nom;",False,resultado distinto,,0.0,2
+mejor_con_ejecutar,veterinaria,media,¿Qué motivos de consulta tienen un costo promedio mayor a 1500? Devuelve motivo y costo promedio.,"SELECT cons_motivo, AVG(cons_costo) AS promedio FROM vet_cons GROUP BY cons_motivo HAVING AVG(cons_costo) > 1500;","SELECT h.cons_motivo, AVG(h.cons_costo) AS costo_promedio FROM vet_cons h GROUP BY h.cons_id, h.cons_motivo HAVING AVG(h.cons_costo) > 1500;",False,resultado distinto,,0.0,2
+mejor_con_ejecutar,veterinaria,dificil,¿Cuántas consultas se hicieron en 2024? Devuelve total.,SELECT COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2024;,SELECT COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2024;,True,,,0.0,3
+mejor_con_ejecutar,veterinaria,dificil,Lista el nombre de los dueños que no tienen ninguna mascota registrada.,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT due_id FROM vet_masc);,SELECT due_nom FROM vet_duenos WHERE due_id NOT IN (SELECT due_id FROM vet_masc);,True,,,0.0,3
+mejor_con_ejecutar,veterinaria,dificil,Muestra el nombre y peso de las mascotas que pesan más que el promedio de su misma especie. Devuelve también la especie.,"SELECT m.masc_nom, m.masc_peso, m.masc_esp FROM vet_masc m WHERE m.masc_peso > (SELECT AVG(x.masc_peso) FROM vet_masc x WHERE x.masc_esp = m.masc_esp);","SELECT h.masc_esp, p.masc_peso FROM vet_masc h JOIN vet_masc p ON h.masc_esp = p.masc_esp WHERE h.masc_peso > (SELECT AVG(p.masc_peso) FROM vet_masc p WHERE p.masc_esp = h.masc_esp);",False,JOIN,,0.0,3
+mejor_con_ejecutar,veterinaria,dificil,"Para cada mes de 2025, muestra el número de consultas, ordenado por mes. Devuelve mes y total.","SELECT MONTH(cons_fec) AS mes, COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2025 GROUP BY MONTH(cons_fec) ORDER BY mes;","SELECT MONTH(cons_fec) AS mes, COUNT(*) AS total FROM vet_cons WHERE YEAR(cons_fec) = 2025 GROUP BY MONTH(cons_fec) ORDER BY mes;",True,,,0.0,3
+mejor_con_ejecutar,veterinaria,dificil,"Para cada especie, muestra la mascota de mayor peso. Devuelve especie, nombre y peso.","WITH r AS (SELECT masc_esp, masc_nom, masc_peso, RANK() OVER (PARTITION BY masc_esp ORDER BY masc_peso DESC) AS pos FROM vet_masc) SELECT masc_esp, masc_nom, masc_peso FROM r WHERE pos = 1;","SELECT h.masc_esp, p.masc_nom, h.masc_peso FROM vet_masc h JOIN vet_masc p ON h.masc_id = p.masc_id ORDER BY h.masc_esp, p.masc_peso DESC;",False,JOIN,,0.0,3
+mejor_con_ejecutar,veterinaria,dificil,Calcula el gasto total en consultas de cada dueño y muestra solo los dueños cuyo gasto supera el promedio de gasto de todos los dueños. Devuelve nombre del dueño y gasto.,"WITH g AS (SELECT m.due_id, SUM(c.cons_costo) AS gasto FROM vet_cons c JOIN vet_masc m ON c.masc_id = m.masc_id GROUP BY m.due_id) SELECT d.due_nom, g.gasto FROM g JOIN vet_duenos d ON g.due_id = d.due_id WHERE g.gasto > (SELECT AVG(gasto) FROM g);","SELECT h.due_nom, SUM(p.cons_costo) AS gasto FROM vet_duenos h JOIN vet_cons p ON p.masc_id = h.due_id GROUP BY h.due_id, h.due_nom HAVING SUM(p.cons_costo) > (SELECT AVG(gasto) FROM (SELECT SUM(p.cons_costo) AS gasto FROM vet_duenos h JOIN vet_cons p ON p.masc_id = h.due_id GROUP BY h.due_id, h.due_nom) AS gasto);",False,agregacion,,0.0,3
+mejor_con_ejecutar,airline,facil,¿Cuántos vuelos fueron cancelados? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE status = 'cancelled';,SELECT COUNT(*) AS total FROM flights WHERE status = 'Cancelado';,False,resultado distinto,,0.0,1
+mejor_con_ejecutar,airline,facil,Muestra el modelo y el número de asientos de los aviones con más de 200 asientos.,"SELECT model, seats FROM aircraft WHERE seats > 200;","SELECT model, seats FROM aircraft WHERE seats > 200;",True,,,0.0,1
+mejor_con_ejecutar,airline,facil,Lista el nombre de los pasajeros de nacionalidad peruana (Peru).,SELECT pax_name FROM passengers WHERE nationality = 'Peru';,SELECT pax_name FROM passengers WHERE nationality = 'Peru';,True,,,0.0,1
+mejor_con_ejecutar,airline,facil,¿Cuál es la tarifa base más alta de todos los vuelos? Devuelve maximo.,SELECT MAX(base_fare) AS maximo FROM flights;,SELECT MAX(base_fare) AS maximo FROM flights;,True,,,0.0,1
+mejor_con_ejecutar,airline,facil,"Muestra el identificador y el monto pagado de las 5 reservas más caras, de mayor a menor.","SELECT booking_id, paid FROM bookings ORDER BY paid DESC LIMIT 5;","SELECT booking_id, paid FROM bookings ORDER BY paid DESC LIMIT 5;",True,,,0.0,1
+mejor_con_ejecutar,airline,facil,Lista el nombre y la ciudad de todos los aeropuertos.,"SELECT airport_name, city FROM airports;","SELECT airport_name, city FROM airports;",True,,,0.0,1
+mejor_con_ejecutar,airline,media,"Para cada vuelo, muestra su identificador y el nombre del aeropuerto de origen.","SELECT f.flight_id, a.airport_name FROM flights f JOIN airports a ON f.origin = a.airport_code;","SELECT h.flight_id, p.airport_name FROM flights h JOIN airports p ON h.origin = p.airport_code;",True,,,0.0,2
+mejor_con_ejecutar,airline,media,¿Cuántas reservas hay en cada clase? Devuelve la clase y la cantidad.,"SELECT class, COUNT(*) AS cantidad FROM bookings GROUP BY class;","SELECT class, COUNT(*) AS cantidad FROM bookings GROUP BY class;",True,,,0.0,2
+mejor_con_ejecutar,airline,media,Calcula el total pagado por cada pasajero. Devuelve el nombre del pasajero y el total.,"SELECT p.pax_name, SUM(b.paid) AS total FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id GROUP BY p.pax_id, p.pax_name;","SELECT p.pax_name, SUM(h.paid) AS total FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id GROUP BY p.pax_id, p.pax_name;",True,,,0.0,2
+mejor_con_ejecutar,airline,media,¿Qué modelos de avión tienen más de 60 vuelos asignados? Devuelve modelo y cantidad de vuelos.,"SELECT a.model, COUNT(*) AS vuelos FROM flights f JOIN aircraft a ON f.aircraft_id = a.aircraft_id GROUP BY a.model HAVING COUNT(*) > 60;","SELECT model, COUNT(*) AS cantidad FROM aircraft WHERE seats > 60 GROUP BY model, seats;",False,JOIN,,0.0,2
+mejor_con_ejecutar,airline,media,Muestra el promedio de tarifa base de los vuelos que salen de cada ciudad. Devuelve ciudad y promedio.,"SELECT a.city, AVG(f.base_fare) AS promedio FROM flights f JOIN airports a ON f.origin = a.airport_code GROUP BY a.city;","SELECT p.city, AVG(h.base_fare) AS promedio FROM flights h JOIN airports p ON h.origin = p.airport_code GROUP BY h.origin, p.city;",False,resultado distinto,,29.9,2
+mejor_con_ejecutar,airline,media,"Lista el nombre de los pasajeros que tienen alguna reserva en clase first, sin repetir.",SELECT DISTINCT p.pax_name FROM bookings b JOIN passengers p ON b.pax_id = p.pax_id WHERE b.class = 'first';,SELECT DISTINCT p.pax_name FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id WHERE h.class = 'first';,True,,,0.0,2
+mejor_con_ejecutar,airline,media,¿Cuántas reservas tiene cada vuelo retrasado? Devuelve el identificador del vuelo y la cantidad.,"SELECT f.flight_id, COUNT(*) AS reservas FROM flights f JOIN bookings b ON b.flight_id = f.flight_id WHERE f.status = 'delayed' GROUP BY f.flight_id;","SELECT h.flight_id, COUNT(*) AS cantidad FROM flights h JOIN bookings p ON h.flight_id = p.flight_id WHERE h.status = 'retrasado' GROUP BY h.flight_id, h.flight_id;",False,resultado distinto,,0.0,2
+mejor_con_ejecutar,airline,dificil,¿Cuántos vuelos salieron en diciembre de 2024? Devuelve total.,SELECT COUNT(*) AS total FROM flights WHERE YEAR(dep_date) = 2024 AND MONTH(dep_date) = 12;,SELECT COUNT(*) AS total FROM flights WHERE MONTH(dep_date) = 12 AND YEAR(dep_date) = 2024;,True,,,0.0,3
+mejor_con_ejecutar,airline,dificil,Lista el nombre de los pasajeros que nunca han hecho una reserva.,SELECT pax_name FROM passengers WHERE pax_id NOT IN (SELECT pax_id FROM bookings);,SELECT p.pax_name FROM passengers p JOIN bookings h ON h.pax_id = p.pax_id WHERE h.booking_id IS NULL;,False,JOIN,,0.0,3
+mejor_con_ejecutar,airline,dificil,Muestra el identificador y el monto de las reservas cuyo pago es mayor que el pago promedio de todas las reservas.,"SELECT booking_id, paid FROM bookings WHERE paid > (SELECT AVG(paid) FROM bookings);","SELECT booking_id, paid FROM bookings WHERE paid > (SELECT AVG(paid) FROM bookings);",True,,,0.0,3
+mejor_con_ejecutar,airline,dificil,"Para cada año de compra, muestra el total pagado en reservas, ordenado por año. Devuelve anio y total.","SELECT YEAR(booking_date) AS anio, SUM(paid) AS total FROM bookings GROUP BY YEAR(booking_date) ORDER BY anio;","SELECT YEAR(booking_date) AS anio, SUM(paid) AS total FROM bookings GROUP BY YEAR(booking_date) ORDER BY anio;",True,,,0.0,3
+mejor_con_ejecutar,airline,dificil,"Ordena las ciudades de origen según el ingreso total de reservas de sus vuelos y muestra la posición con RANK de mayor a menor. Devuelve ciudad, ingreso y posicion.","WITH t AS (SELECT a.city, SUM(b.paid) AS ingreso FROM bookings b JOIN flights f ON b.flight_id = f.flight_id JOIN airports a ON f.origin = a.airport_code GROUP BY a.city) SELECT city, ingreso, RANK() OVER (ORDER BY ingreso DESC) AS posicion FROM t;","WITH total_reservations AS (SELECT h.origin, SUM(p.paid) AS ingreso FROM flights h JOIN bookings p ON h.flight_id = p.flight_id GROUP BY h.origin, h.flight_id) SELECT p.city, total_reservations.ingreso, RANK() OVER (ORDER BY total_reservations.ingreso DESC) AS posicion FROM total_reservations JOIN airports p ON total_reservations.origin = p.airport_code;",False,resultado distinto,,0.0,3
+mejor_con_ejecutar,airline,dificil,¿Qué aviones tienen más vuelos que el promedio de vuelos por avión? Devuelve el identificador del avión y la cantidad de vuelos.,"WITH c AS (SELECT aircraft_id, COUNT(*) AS vuelos FROM flights GROUP BY aircraft_id) SELECT aircraft_id, vuelos FROM c WHERE vuelos > (SELECT AVG(vuelos) FROM c);","SELECT h.aircraft_id, COUNT(*) AS cantidad_de_vuelos FROM aircraft h JOIN flights p ON h.aircraft_id = p.aircraft_id GROUP BY h.aircraft_id, h.aircraft_id HAVING COUNT(*) > (SELECT AVG(COUNT(*)) AS promedio FROM (SELECT h.aircraft_id, COUNT(*) AS cantidad_de_vuelos FROM aircraft h JOIN flights p ON h.aircraft_id = p.aircraft_id GROUP BY h.aircraft_id, h.aircraft_id) AS promedio);",False,agregacion,"(1111, 'Invalid use of group function')",78.3,3
