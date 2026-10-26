@@ -1,0 +1,104 @@
+commit 7bd0b55788e41c0a326fc7a96d3627fade333c85
+Author: Hugo2049 <Hugobarillasvi@hotmail.com>
+Date:   2026-10-26 02:24:22 +0000
+
+    Evaluacion en validacion propia, experimento con ejecutar y analisis de errores
+
+ adapter/README.md                    |  207 ++++
+ adapter/adapter_config.json          |   51 +
+ adapter/adapter_model.safetensors    |  Bin 0 -> 34917504 bytes
+ notebooks/03_evaluacion.ipynb        | 2271 ++++++++++++++++++++++++++++++++++
+ resultados/errores_por_categoria.csv |    7 +
+ resultados/errores_por_categoria.png |  Bin 0 -> 42910 bytes
+ resultados/ex_por_corrida.png        |  Bin 0 -> 24708 bytes
+ resultados/resumen_ex.csv            |    5 +
+ resultados/validacion_propia.csv     |  289 +++++
+ solucion.py                          |    4 +
+ 10 files changed, 2834 insertions(+)
+
+commit 30fbbca848ea6a4c6faed88fb27b8149bd694295
+Author: Hugo2049 <Hugobarillasvi@hotmail.com>
+Date:   2026-10-26 02:00:44 +0000
+
+    Entrenamiento de las configuraciones LoRA A y B con curvas de loss
+
+ adapters/lora_r16/README.md                 | 207 ++++++++
+ adapters/lora_r16/adapter_config.json       |  51 ++
+ adapters/lora_r16/adapter_model.safetensors | Bin 0 -> 34917504 bytes
+ adapters/lora_r16/resultado.json            |   1 +
+ adapters/lora_r8/README.md                  | 207 ++++++++
+ adapters/lora_r8/adapter_config.json        |  51 ++
+ adapters/lora_r8/adapter_model.safetensors  | Bin 0 -> 17484288 bytes
+ adapters/lora_r8/resultado.json             |   1 +
+ notebooks/02_entrenamiento.ipynb            | 783 ++++++++++++++++++++++++++++
+ resultados/curvas_loss.json                 |   1 +
+ resultados/curvas_loss.png                  | Bin 0 -> 69025 bytes
+ resultados/resumen_entrenamiento.csv        |   3 +
+ 12 files changed, 1305 insertions(+)
+
+commit 041d623f9f54df2e2ac6930d74788ee13c8a5259
+Author: Hugo2049 <Hugobarillasvi@hotmail.com>
+Date:   2026-10-25 21:31:54 +0000
+
+    solucion.py con prompt, carga del modelo y correccion con ejecutar
+
+ solucion.py | 109 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 109 insertions(+)
+
+commit a7c2c23432206551053102d11f1b42426cd96314
+Author: GenserDev <genserdev@gmail.com>
+Date:   2026-10-25 21:30:40 +0000
+
+    Validacion propia con 40 preguntas y evaluador por ejecucion
+
+ datos/validacion_propia.json | 42 +++++++++++++++++++++++++++
+ evaluador.py                 | 67 ++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 109 insertions(+)
+
+commit 6104062c87c279c55eb628a2f4f52e55cc465d3c
+Author: GenserDev <genserdev@gmail.com>
+Date:   2026-10-25 21:30:40 +0000
+
+    Generador de pares, dataset de entrenamiento y descartes
+
+ datos/construir.py                 |  423 ++++++
+ datos/descartes.csv                | 2771 ++++++++++++++++++++++++++++++++++++
+ datos/entrenamiento.jsonl          | 2630 ++++++++++++++++++++++++++++++++++
+ datos/esquemas_sql/airline.sql     |   49 +
+ datos/esquemas_sql/banco.sql       |   40 +
+ datos/esquemas_sql/biblioteca.sql  |   39 +
+ datos/esquemas_sql/cine.sql        |   39 +
+ datos/esquemas_sql/gimnasio.sql    |   41 +
+ datos/esquemas_sql/hotel.sql       |   39 +
+ datos/esquemas_sql/hr.sql          |   41 +
+ datos/esquemas_sql/logistica.sql   |   39 +
+ datos/esquemas_sql/music_store.sql |   39 +
+ datos/esquemas_sql/restaurante.sql |   38 +
+ datos/esquemas_sql/taller.sql      |   37 +
+ datos/esquemas_sql/tienda.sql      |   38 +
+ datos/esquemas_sql/universidad.sql |   51 +
+ datos/esquemas_sql/veterinaria.sql |   58 +
+ notebooks/01_datos.ipynb           |  756 ++++++++++
+ 18 files changed, 7168 insertions(+)
+
+commit 4c01539e3b77034a41f1f5c41a7bf617ad0746cd
+Author: GenserDev <genserdev@gmail.com>
+Date:   2026-10-25 21:30:40 +0000
+
+    Estructura base del proyecto y esquemas propios
+
+ .gitignore        |   2 +
+ README.md         |   7 +-
+ config.json       |   6 +
+ datos/esquemas.py | 466 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ requirements.txt  |   7 +
+ 5 files changed, 487 insertions(+), 1 deletion(-)
+
+commit 0075df8e7ccc6d2708c77f3716ca3ee1ddbfb8e7
+Author: Genser Catalan <164691835+GenserDev@users.noreply.github.com>
+Date:   2026-10-25 10:26:33 -0600
+
+    Initial commit
+
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
