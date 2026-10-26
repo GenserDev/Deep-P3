@@ -1,3 +1,16 @@
+commit 4efdcc74346e7da8fae1b6f2f8a05b72f01df8a4
+Author: GenserDev <genserdev@gmail.com>
+Date:   2026-10-26 02:24:23 +0000
+
+    README, bitacora, contribuciones, presentacion e historial de git
+
+ BITACORA.md       |  33 +++++++++++++++
+ CONTRIBUCIONES.md |  20 +++++++++
+ README.md         | 118 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ historial_git.txt | 104 +++++++++++++++++++++++++++++++++++++++++++++++
+ presentacion.pdf  | Bin 0 -> 201679 bytes
+ 5 files changed, 275 insertions(+)
+
 commit 7bd0b55788e41c0a326fc7a96d3627fade333c85
 Author: Hugo2049 <Hugobarillasvi@hotmail.com>
 Date:   2026-10-26 02:24:22 +0000
